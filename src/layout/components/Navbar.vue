@@ -59,7 +59,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { updatePassword } from '@/api/user'
+import { updatePassword } from '@/api'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 

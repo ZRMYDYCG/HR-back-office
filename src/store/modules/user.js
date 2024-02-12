@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo } from '@/api'
 const state = {
   token: getToken(), //  a. token 登录状态
   userInfo: {} //  b. userInfo 用户信息状态

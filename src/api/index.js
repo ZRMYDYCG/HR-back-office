@@ -44,4 +44,24 @@ service.interceptors.response.use((response) => {
   return Promise.reject(error)
 })
 
-export default service
+/*
+  * 用户模块
+  * login 登录
+  * getUserInfo 获取用户信息
+  * updatePassword 修改密码
+*/
+
+export const login = (data) => service({ url: '/sys/login', method: 'post', data })
+
+export const getUserInfo = () => service({ url: '/sys/profile', method: 'get' })
+
+export const updatePassword = (data) => service({ url: '/sys/user/updatePass', method: 'put', data })
+
+/*
+  * 组织架构模块
+  * getDepartment 获取组织架构数据
+  *
+  *
+*/
+
+export const getDepartment = () => service({ url: '/company/department', method: 'get' })
