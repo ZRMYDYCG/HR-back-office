@@ -2,7 +2,28 @@
   <div class="container">
     <div class="app-container">
       <!-- 展示树形结构 -->
-      <el-tree default-expand-all :data="depes" :props="defaultProps" />
+      <el-tree :data="depes" :props="defaultProps">
+        <template v-slot="{ data }">
+          <el-row type="flex" justify="space-betweent" align="middle">
+            <el-col>{{ data.name }}</el-col>
+            <el-col span="4">
+              <span class="el-col-span_manager">{{ data.managerName }}</span>
+              <el-dropdown>
+                <!-- 显示区域内容 -->
+                <span class="el-dropdown-link">
+                  操作<i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <!-- 下拉菜单选项 -->
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>添加子部门</el-dropdown-item>
+                  <el-dropdown-item>编辑部门</el-dropdown-item>
+                  <el-dropdown-item>删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </el-col>
+          </el-row>
+        </template>
+      </el-tree>
     </div>
   </div>
 </template>
@@ -13,10 +34,17 @@ export default {
   data() {
     return {
       depes: [
-        { name: '传智教育', children: [{
-          name: '总裁办'
+        { name: '传智教育', managerName: '管理员', children: [{
+          name: '总裁办',
+          managerName: '张三'
+        }, {
+          name: '行政部',
+          managerName: '李四'
+        }, {
+          name: '人事部',
+          managerName: '王五'
         }] }, {
-          name: '行政部', children: [{}]
+          name: '行政部'
         }
       ],
       defaultProps: {
@@ -28,9 +56,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
 .app-container {
   padding: 30px 140px;
   font-size: 14px;
+  .el-tree  {
+    .el-row {
+      width: 100%;
+      .el-col {
+        .el-col-span_manager {
+          margin-right: 15px;
+        }
+      }
+    }
+  }
 }
 </style>
