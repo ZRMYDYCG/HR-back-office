@@ -2,7 +2,7 @@
   <div class="container">
     <div class="app-container">
       <!-- 展示树形结构 -->
-      <el-tree :data="depes" :props="defaultProps">
+      <el-tree default-expand-all :data="depes" :props="defaultProps">
         <template v-slot="{ data }">
           <el-row type="flex" justify="space-betweent" align="middle">
             <el-col>{{ data.name }}</el-col>
@@ -30,6 +30,7 @@
 
 <script>
 import { getDepartment } from '@/api'
+import { transListToTreeData } from '@/utils'
 export default {
   name: 'Department',
   data() {
@@ -47,7 +48,7 @@ export default {
   methods: {
     async GETDEPARTMENT() {
       const res = await getDepartment()
-      this.depes = res
+      this.depes = transListToTreeData(res, 0)
     }
   }
 }
