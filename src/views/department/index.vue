@@ -2,7 +2,7 @@
   <div class="container">
     <div class="app-container">
       <!-- 展示树形结构 -->
-      <el-tree :data="depes" :props="defaultProps"></el-tree>
+      <el-tree default-expand-all :data="depes" :props="defaultProps" />
     </div>
   </div>
 </template>
@@ -13,12 +13,12 @@ export default {
   data() {
     return {
       depes: [
-        {name: '传智教育', children: [{
+        { name: '传智教育', children: [{
           name: '总裁办'
-        }]}, {
+        }] }, {
           name: '行政部', children: [{}]
         }
-      ], // 数据属性
+      ],
       defaultProps: {
         label: 'name',
         children: 'children'
@@ -29,5 +29,8 @@ export default {
 </script>
 
 <style>
-
+.app-container {
+  padding: 30px 140px;
+  font-size: 14px;
+}
 </style>
