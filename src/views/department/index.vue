@@ -8,10 +8,14 @@
             <el-col>{{ data.name }}</el-col>
             <el-col span="4">
               <span class="el-col-span_manager">{{ data.managerName }}</span>
-              <el-dropdown @command="operateDept">
+              <!--
+                  $event 实参 表示类型
+                  operateDept($event) <=> operateDept
+               -->
+              <el-dropdown @command="operateDept($event, data.id)">
                 <!-- 显示区域内容 -->
                 <span class="el-dropdown-link">
-                  操作<i class="el-icon-arrow-down el-icon--right" />
+                  操作 <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <!-- 下拉菜单选项 -->
                 <el-dropdown-menu slot="dropdown">
@@ -28,7 +32,7 @@
     <!-- 放置弹层组件 -->
     <!-- .sync 语法糖 说白了就是可以简化父组件对子组件传递过来的数据的接收 -->
     <!-- 会接受子组件的事件 update:isShowDialog => 并且可以接收到子组件对值的改变，进行重新赋值 -->
-    <add-dept :show-dialog.sync="isShowDialog" />
+    <add-dept :current-node-id="currentNodeId" :show-dialog.sync="isShowDialog" @updateDepartment="updateDepartment" />
   </div>
 </template>
 
@@ -44,6 +48,7 @@ export default {
   data() {
     return {
       isShowDialog: false,
+      currentNodeId: null,
       depes: [],
       defaultProps: {
         label: 'name',
@@ -52,18 +57,23 @@ export default {
     }
   },
   mounted() {
-    this.GETDEPARTMENT()
+    this.getDepartment()
   },
   methods: {
-    async GETDEPARTMENT() {
+    async getDepartment() {
       const res = await getDepartment()
       this.depes = transListToTreeData(res, 0)
     },
-    operateDept(type) {
+    operateDept(type, id) {
+      console.log(type, id)
       if (type === 'add') {
         // 添加子部门
         this.isShowDialog = !this.isShowDialog
+        this.currentNodeId = id
       }
+    },
+    updateDepartment() {
+      this.getDepartment()
     }
   }
 }

@@ -44,12 +44,12 @@ service.interceptors.response.use((response) => {
   return Promise.reject(error)
 })
 
-/*
+/**
   * 用户模块
   * login 登录
   * getUserInfo 获取用户信息
   * updatePassword 修改密码
-*/
+***/
 
 export const login = (data) => service({ url: '/sys/login', method: 'post', data })
 
@@ -60,10 +60,12 @@ export const updatePassword = (data) => service({ url: '/sys/user/updatePass', m
 /**
   * 组织架构模块
   * getDepartment 获取组织架构数据
-  * get
-  *
+  * getManagerList 获取负责人下拉列表数据
+  * addDepartment 新增组织
 ***/
 
 export const getDepartment = () => service({ url: '/company/department', method: 'get' })
 
 export const getManagerList = () => service({ url: '/sys/user/simple', method: 'get' })
+
+export const addDepartment = (data) => service({ url: '/company/department', method: 'post', data })
