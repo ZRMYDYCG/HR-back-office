@@ -57,11 +57,13 @@ export const getUserInfo = () => service({ url: '/sys/profile', method: 'get' })
 
 export const updatePassword = (data) => service({ url: '/sys/user/updatePass', method: 'put', data })
 
-/*
+/**
   * 组织架构模块
   * getDepartment 获取组织架构数据
+  * get
   *
-  *
-*/
+***/
 
 export const getDepartment = () => service({ url: '/company/department', method: 'get' })
+
+export const getManagerList = () => service({ url: '/sys/user/simple', method: 'get' })
