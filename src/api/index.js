@@ -44,6 +44,8 @@ service.interceptors.response.use((response) => {
   return Promise.reject(error)
 })
 
+export default service
+
 /**
   * 用户模块
   * login 登录
