@@ -19,7 +19,8 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="introduce" label="部门介绍">
-        <el-input v-model="formData.introduce" type="textarea" :rows="4" style="width: 80%;" size="mini" placeholder="1-100个字符" />
+        <el-input v-model="formData.introduce" type="textarea" :rows="4" style="width: 80%;" size="mini"
+          placeholder="1-100个字符" />
       </el-form-item>
       <el-form-item>
         <el-row type="flex" justify="center">
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import { getDepartment, getManagerList, addDepartment } from '@/api'
+import { getDepartment, getManagerList, addDepartment, apiGetDepartmentDetail } from '@/api'
 export default {
   name: 'AddDept',
   props: {
@@ -59,48 +60,48 @@ export default {
       },
       rules: {
         code: [{ required: true, message: '部门编码不能为空', trigger: 'blur' },
-          {
-            min: 2, max: 10, message: '部门编码的长度为2-10个字符', trigger: 'blur'
-          },
-          {
-            trigger: 'blur',
-            validator: async(rule, value, callback) => {
-              /*
-              * @params(value:就是输入的编码)
-              */
-              const res = await getDepartment()
-              if (res.some(item => item.code === value)) {
-                callback(new Error('部门中已经有该编码了'))
-              } else {
-                callback()
-              }
+        {
+          min: 2, max: 10, message: '部门编码的长度为2-10个字符', trigger: 'blur'
+        },
+        {
+          trigger: 'blur',
+          validator: async (rule, value, callback) => {
+            /*
+            * @params(value:就是输入的编码)
+            */
+            const res = await getDepartment()
+            if (res.some(item => item.code === value)) {
+              callback(new Error('部门中已经有该编码了'))
+            } else {
+              callback()
             }
           }
+        }
         ],
         introduce: [{ required: true, message: '部门介绍不能为空', trigger: 'blur' },
-          {
-            min: 1, max: 100, message: '部门介绍的长度为1-100个字符', trigger: 'blur'
-          }
+        {
+          min: 1, max: 100, message: '部门介绍的长度为1-100个字符', trigger: 'blur'
+        }
         ],
         managerId: [{ required: true, message: '部门负责人不能为空', trigger: 'blur' }],
         name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' },
-          {
-            min: 2, max: 10, message: '部门名称的长度为2-10个字符', trigger: 'blur'
-          },
-          {
-            trigger: 'blur',
-            validator: async(rule, value, callback) => {
-              /*
-              * @params(value:就是输入的编码)
-              */
-              const res = await getDepartment()
-              if (res.some(item => item.name === value)) {
-                callback(new Error('部门中已经有该名称了'))
-              } else {
-                callback()
-              }
+        {
+          min: 2, max: 10, message: '部门名称的长度为2-10个字符', trigger: 'blur'
+        },
+        {
+          trigger: 'blur',
+          validator: async (rule, value, callback) => {
+            /*
+            * @params(value:就是输入的编码)
+            */
+            const res = await getDepartment()
+            if (res.some(item => item.name === value)) {
+              callback(new Error('部门中已经有该名称了'))
+            } else {
+              callback()
             }
           }
+        }
         ]
       }
     }
@@ -109,15 +110,24 @@ export default {
     this.getManagerList()
   },
   methods: {
+    /**
+     * 关闭弹窗
+     * */
     closeDialog() {
       // 重置表单
-      this.$refs.addDept.resetFiles()
+      this.$refs.addDept.resetFields()
       // 子传父
       this.$emit('update:showDialog', false)
     },
+    /**
+     * 获取负责人下拉列表数据
+    */
     async getManagerList() {
       this.ManagerList = await getManagerList()
     },
+    /**
+     * 点击确定时调用
+    */
     btnOK() {
       this.$refs.addDept.validate(async isOK => {
         if (isOK) {
@@ -129,11 +139,15 @@ export default {
           this.closeDialog()
         }
       })
+    },
+    /**
+     * 点击获取组织的详情
+    */
+    async getDepartmentDetail() {
+      this.formData = await apiGetDepartmentDetail(this.currentNodeId)
     }
   }
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

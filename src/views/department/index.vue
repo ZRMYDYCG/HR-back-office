@@ -8,10 +8,7 @@
             <el-col>{{ data.name }}</el-col>
             <el-col span="4">
               <span class="el-col-span_manager">{{ data.managerName }}</span>
-              <!--
-                  $event 实参 表示类型
-                  operateDept($event) <=> operateDept
-               -->
+              <!-- $event 实参 表示类型 -->
               <el-dropdown @command="operateDept($event, data.id)">
                 <!-- 显示区域内容 -->
                 <span class="el-dropdown-link">
@@ -29,21 +26,22 @@
         </template>
       </el-tree>
     </div>
-    <!-- 放置弹层组件 -->
-    <!-- .sync 语法糖 说白了就是可以简化父组件对子组件传递过来的数据的接收 -->
-    <!-- 会接受子组件的事件 update:isShowDialog => 并且可以接收到子组件对值的改变，进行重新赋值 -->
-    <add-dept :current-node-id="currentNodeId" :show-dialog.sync="isShowDialog" @updateDepartment="updateDepartment" />
+    <!-- 子组件弹层，使用.sync语法可以简化父组件对子组件传递过来的数据的接收 -->
+    <!-- ref 可以获取DOM实例对象, ref 可以获取自定义组件的实例对象, this.$ref.addDept  等同于子组件的 this -->
+    <!-- 会接受子组件的事件 update:isShowDialog, 并且可以接收到子组件对值的改变，进行重新赋值 -->
+    <add-dept ref="addDept" :current-node-id="currentNodeId" :show-dialog.sync="isShowDialog"
+      @updateDepartment="updateDepartment" />
   </div>
 </template>
 
 <script>
 import { getDepartment } from '@/api'
 import { transListToTreeData } from '@/utils'
-import AddDept from './AddDept'
+import addDept from './components/add-dept/index.vue'
 export default {
   name: 'Department',
   components: {
-    AddDept
+    addDept
   },
   data() {
     return {
@@ -67,9 +65,17 @@ export default {
     operateDept(type, id) {
       console.log(type, id)
       if (type === 'add') {
-        // 添加子部门
         this.isShowDialog = !this.isShowDialog
         this.currentNodeId = id
+      } else if (type === 'edit') {
+        this.isShowDialog = true
+        this.currentNodeId = id
+        // nextTick 场景:
+        // 更新 props -> 异步动作
+        // 直接调用子组件的方法 -> 同步动作
+        this.$nextTick(() => {
+          this.$refs.addDept.getDepartmentDetail()
+        })
       }
     },
     updateDepartment() {
@@ -83,9 +89,11 @@ export default {
 .app-container {
   padding: 30px 140px;
   font-size: 14px;
-  .el-tree  {
+
+  .el-tree {
     .el-row {
       width: 100%;
+
       .el-col {
         .el-col-span_manager {
           margin-right: 15px;

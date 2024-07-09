@@ -62,10 +62,12 @@ export const updatePassword = (data) => service({ url: '/sys/user/updatePass', m
   * getDepartment 获取组织架构数据
   * getManagerList 获取负责人下拉列表数据
   * addDepartment 新增组织
+  *
 ***/
-
 export const getDepartment = () => service({ url: '/company/department', method: 'get' })
 
 export const getManagerList = () => service({ url: '/sys/user/simple', method: 'get' })
 
 export const addDepartment = (data) => service({ url: '/company/department', method: 'post', data })
+
+export const apiGetDepartmentDetail = (id) => service({ url: '/company/department/' + id, method: 'get' })
