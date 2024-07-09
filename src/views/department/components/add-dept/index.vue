@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增部门" :visible="showDialog" @close="closeDialog">
+  <el-dialog :title="dialogTitle" :visible="showDialog" @close="closeDialog">
     <!-- 放置弹层内容 -->
     <el-form ref="addDept" :rules="rules" :model="formData" label-width="120px">
       <el-form-item prop="name" label="部门名称">
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getDepartment, getManagerList, addDepartment, apiGetDepartmentDetail } from '@/api'
+import { getDepartment, getManagerList, addDepartment, apiGetDepartmentDetail, apiUpdataDepartmentData } from '@/api'
 export default {
   name: 'AddDept',
   props: {
@@ -81,37 +81,40 @@ export default {
           }
         }
         ],
-        introduce: [{ required: true, message: '部门介绍不能为空', trigger: 'blur' },
-        {
-          min: 1, max: 100, message: '部门介绍的长度为1-100个字符', trigger: 'blur'
-        }
+        introduce: [
+          { required: true, message: '部门介绍不能为空', trigger: 'blur' },
+          { min: 1, max: 100, message: '部门介绍的长度为1-100个字符', trigger: 'blur' }
         ],
         managerId: [{ required: true, message: '部门负责人不能为空', trigger: 'blur' }],
-        name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' },
-        {
-          min: 2, max: 10, message: '部门名称的长度为2-10个字符', trigger: 'blur'
-        },
-        {
-          trigger: 'blur',
-          validator: async (rule, value, callback) => {
-            /*
-            * @params(value:就是输入的编码)
-            */
-            let res = await getDepartment()
-            // 判断是否是编辑模式
-            if (this.formData.id) {
-              res = res.filter(item => item.id !== this.formData.id)
-            }
-            // 判断 res 数组中是否存在 value 值
-            if (res.some(item => item.name === value)) {
-              callback(new Error('部门中已经有该名称了'))
-            } else {
-              callback()
+        name: [
+          { required: true, message: '部门名称不能为空', trigger: 'blur' },
+          { min: 2, max: 10, message: '部门名称的长度为2-10个字符', trigger: 'blur' },
+          {
+            trigger: 'blur',
+            validator: async (rule, value, callback) => {
+              /*
+              * @params(value:就是输入的编码)
+              */
+              let res = await getDepartment()
+              // 判断是否是编辑模式
+              if (this.formData.id) {
+                res = res.filter(item => item.id !== this.formData.id)
+              }
+              // 判断 res 数组中是否存在 value 值
+              if (res.some(item => item.name === value)) {
+                callback(new Error('部门中已经有该名称了'))
+              } else {
+                callback()
+              }
             }
           }
-        }
         ]
       }
+    }
+  },
+  computed: {
+    dialogTitle() {
+      return this.formData.id ? '编辑部门' : '新增部门'
     }
   },
   created() {
@@ -124,6 +127,14 @@ export default {
     closeDialog() {
       // 重置表单
       this.$refs.addDept.resetFields()
+      // 关键: 记得初始化 id ,也即初始化 formData
+      this.formData = {
+        code: '',
+        introduce: '',
+        managerId: '',
+        name: '',
+        pid: ''
+      }
       // 子传父
       this.$emit('update:showDialog', false)
     },
@@ -139,10 +150,20 @@ export default {
     btnOK() {
       this.$refs.addDept.validate(async isOK => {
         if (isOK) {
-          await addDepartment({ ...this.formData, pid: this.currentNodeId })
+          let message = "新增"
+          // 通过 formData 中的 id 来判断
+          if (this.formData.id) {
+            // 编辑场景
+            message = "更新"
+            await apiUpdataDepartmentData(this.formData)
+          } else {
+            // 新增场景
+            await addDepartment({ ...this.formData, pid: this.currentNodeId })
+          }
           // 通知父组件进行更新
           this.$emit('updateDepartment')
-          this.$message.success('新增部门成功')
+          // 弹窗提示
+          this.$message.success(`${message}部门成功`)
           // 关闭并重置弹层表单
           this.closeDialog()
         }
