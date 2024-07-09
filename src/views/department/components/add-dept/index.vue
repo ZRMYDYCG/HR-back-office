@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getDepartment, getManagerList, addDepartment, apiGetDepartmentDetail, apiUpdataDepartmentData } from '@/api'
+import { getDepartment, getManagerList, addDepartment, apiGetDepartmentDetail, apiUpdataDepartmentData, apiDelteDepartment } from '@/api'
 export default {
   name: 'AddDept',
   props: {
