@@ -75,6 +75,5 @@ export const apiGetDepartmentDetail = (id) => service({ url: '/company/departmen
 
 export const apiUpdataDepartmentData = (data) => service({ url: '/company/department/' + data.id, method: 'put', data })
 
-export const apiDelteDepartment = (id) => service({ url: "/company/department/" + id, method: 'delete' })
-
+export const apiDelteDepartment = (id) => service({ url: '/company/department/' + id, method: 'delete' })
 
