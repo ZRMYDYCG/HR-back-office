@@ -6,8 +6,8 @@
         <el-input style="margin-bottom:10px" type="text" prefix-icon="el-icon-search" size="small"
           placeholder="输入员工姓名全员搜索" />
         <!-- 树形组件 -->
-        <el-tree :data="depts" :props="defaultProps" default-expand-all :expand-on-click-node="false"
-          highlight-current></el-tree>
+        <el-tree ref="deptTree" node-key="id" :data="depts" :props="defaultProps" default-expand-all
+          :expand-on-click-node="false" highlight-current @current-change="selectNode"></el-tree>
       </div>
       <!-- leftTree End -->
       <!-- rightTable Start -->
@@ -36,12 +36,25 @@ export default {
       defaultProps: {
         label: 'name',
         children: 'children'
+      },
+      queryParams: {
+        departmentId: null
       }
     }
   },
   methods: {
     async apiGetDepartment() {
+      // 将列表转为树形结构
       this.depts = transListToTreeData(await getDepartment(), 0)
+      // 定义默认要被选中的节点
+      this.queryParams.departmentId = this.depts[0].id
+      // 树组件渲染为异步, 等待其更新完毕
+      this.$nextTick(() => {
+        this.$refs.deptTree.setCurrentKey(this.queryParams.departmentId)
+      })
+    },
+    selectNode(node) {
+      this.queryParams.departmentId = node.id
     }
   },
   created() {
