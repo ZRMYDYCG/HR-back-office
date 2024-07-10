@@ -31,3 +31,13 @@ export const updateRole = (data) => {
     data
   })
 }
+
+/**
+ * 删除角色
+*/
+export const delRole = (id) => {
+  return service({
+    url: `/sys/role/${id}`,
+    method: 'delete'
+  })
+}
