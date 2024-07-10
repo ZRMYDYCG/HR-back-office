@@ -9,3 +9,14 @@ export const apiGetRoleList = (params) => {
     params
   })
 }
+
+/**
+ * 新增角色
+*/
+export const addRole = (data) => {
+  return service({
+    url: '/sys/role',
+    method: 'post',
+    data
+  })
+}

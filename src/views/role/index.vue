@@ -34,12 +34,12 @@
       <!-- Pagination End -->
 
       <!-- Dialog Start -->
-      <el-dialog title="新增角色" :visible.sync="showDialog">
+      <el-dialog @close="btnCancel" title="新增角色" :visible.sync="showDialog">
         <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="120px">
           <el-form-item prop="name" label="角色名称">
             <el-input v-model="roleForm.name" size="mini"></el-input>
           </el-form-item>
-          <el-form-item label="启用">
+          <el-form-item label="启用" prop="state">
             <el-switch :active-value="1" :inactive-value="0" v-model="roleForm.state"></el-switch>
           </el-form-item>
           <el-form-item prop="description" label="角色描述">
@@ -47,8 +47,8 @@
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button>确定</el-button>
-              <el-button>取消</el-button>
+              <el-button @click="btnOk">确定</el-button>
+              <el-button @click="btnCancel">取消</el-button>
             </el-row>
           </el-form-item>
         </el-form>
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { apiGetRoleList } from '@/api/role'
+import { apiGetRoleList, addRole } from '@/api/role'
 export default {
   name: 'Role',
   data() {
@@ -94,6 +94,20 @@ export default {
     changePage(newPage) {
       this.pageParams.page = newPage
       this.getRoleList()
+    },
+    btnOk() {
+      this.$refs.roleForm.validate(async (pass) => {
+        if (pass) {
+          await addRole(this.roleForm)
+          this.$message.success("新增角色成功")
+          this.getRoleList()
+          this.btnCancel()
+        }
+      })
+    },
+    btnCancel() {
+      this.$refs.roleForm.resetFields()
+      this.showDialog = false
     }
   }
 }
