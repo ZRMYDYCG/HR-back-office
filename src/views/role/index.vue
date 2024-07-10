@@ -35,22 +35,22 @@
 
       <!-- Dialog Start -->
       <el-dialog title="新增角色" :visible.sync="showDialog">
-        <el-form label-width="120px">
-          <el-form-item label="角色名称">
-            <el-input size="mini"></el-input>
+        <el-form ref="roleForm" :model="roleForm" :rules="rules" label-width="120px">
+          <el-form-item prop="name" label="角色名称">
+            <el-input v-model="roleForm.name" size="mini"></el-input>
           </el-form-item>
           <el-form-item label="启用">
-            <el-switch></el-switch>
+            <el-switch :active-value="1" :inactive-value="0" v-model="roleForm.state"></el-switch>
           </el-form-item>
-          <el-form-item label="角色描述">
-            <el-input type="textarea" size="mini"></el-input>
+          <el-form-item prop="description" label="角色描述">
+            <el-input v-model="roleForm.description" type="textarea" size="mini"></el-input>
           </el-form-item>
-          <el-from-item>
+          <el-form-item>
             <el-row type="flex" justify="center">
               <el-button>确定</el-button>
               <el-button>取消</el-button>
             </el-row>
-          </el-from-item>
+          </el-form-item>
         </el-form>
       </el-dialog>
       <!-- Dialog End -->
@@ -70,7 +70,16 @@ export default {
         pagesize: 2,
         total: 0
       },
-      showDialog: false
+      showDialog: false,
+      roleForm: {
+        name: '',
+        description: '',
+        state: 0
+      },
+      rules: {
+        name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
+        description: [{ required: true, message: '角色描述不能为空', trigger: 'blur' }]
+      }
     }
   },
   created() {
