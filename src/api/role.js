@@ -20,3 +20,14 @@ export const addRole = (data) => {
     data
   })
 }
+
+/**
+ * 更新角色数据
+*/
+export const updateRole = (data) => {
+  return service({
+    url: `/sys/role/${data.id}`,
+    method: 'put',
+    data
+  })
+}
