@@ -53,7 +53,7 @@
       <!-- Pagination Start -->
       <el-row type="flex" justify="end" align="middle" style="height: 60px;">
         <el-pagination :page-size="pageParams.pagesize" :current-page="pageParams.page" :total="pageParams.total"
-          background @current-change="changePage" layout="prev, pager, next"></el-pagination>
+          background @current-change="changePage" layout="total,prev, pager, next"></el-pagination>
       </el-row>
       <!-- Pagination End -->
 
