@@ -24,6 +24,7 @@ service.interceptors.response.use((response) => {
   // 返回的结果 response 默认包裹了一层 data
   const { data, message, success } = response.data
   if (success) {
+    console.log(data)
     return data
   } else {
     Message({ type: 'error', message }) // 错误弹框提示
