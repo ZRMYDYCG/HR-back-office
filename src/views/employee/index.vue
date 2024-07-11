@@ -3,8 +3,8 @@
     <div class="app-container">
       <!-- leftTree Start -->
       <div class="left">
-        <el-input style="margin-bottom:10px" type="text" prefix-icon="el-icon-search" size="small"
-          placeholder="输入员工姓名全员搜索" />
+        <el-input v-model="queryParams.keyword" style="margin-bottom:10px" type="text" prefix-icon="el-icon-search"
+          size="small" placeholder="输入员工姓名全员搜索" @input="inputChange" />
         <!-- 树形组件 -->
         <el-tree ref="deptTree" node-key="id" :data="depts" :props="defaultProps" default-expand-all
           :expand-on-click-node="false" highlight-current @current-change="selectNode"></el-tree>
@@ -29,7 +29,11 @@
           <el-table-column prop="mobile" label="手机号" sortable />
           <el-table-column prop="workNumber" label="工号" sortable />
           <el-table-column prop="formOfEmployment" label="聘用形式">
-            <template></template>
+            <template v-slot="{ row }">
+              <span v-if="row.formOfEmployment === 1">正式</span>
+              <span v-else-if="row.formOfEmployment === 2">非正式</span>
+              <span v-else>无</span>
+            </template>
           </el-table-column>
           <el-table-column prop="departmentName" label="部门" />
           <el-table-column prop="timeOfEntry" label="入职时间" sortable />
@@ -43,7 +47,8 @@
         </el-table>
         <!-- 分页 -->
         <el-row style="height: 60px" align="middle" type="flex" justify="end">
-          <el-pagination layout="total,prev, pager, next" :total="1000" />
+          <el-pagination layout="total,prev, pager, next" :total="total" :current-page="queryParams.page"
+            :page-size="queryParams.pagesize" @current-change="changePage" />
         </el-row>
       </div>
       <!-- rightTable End -->
@@ -62,12 +67,16 @@ export default {
       depts: [],
       defaultProps: {
         label: 'name',
-        children: 'children'
+        children: 'children',
       },
       queryParams: {
-        departmentId: null
+        departmentId: null,
+        page: 1,
+        pagesize: 10,
+        keyword: ""
       },
-      list: []
+      list: [],
+      total: 0
     }
   },
   methods: {
@@ -85,11 +94,26 @@ export default {
     },
     selectNode(node) {
       this.queryParams.departmentId = node.id
+      this.queryParams.page = 1 // 重置为第一页
       this.getEmployeeList()
     },
     async getEmployeeList() {
-      const { rows } = await apiGetEmployeeList(this.queryParams)
+      const { rows, total } = await apiGetEmployeeList(this.queryParams)
       this.list = rows
+      this.total = total
+    },
+    changePage(newPage) {
+      this.queryParams.page = newPage
+      this.getEmployeeList()
+    },
+    inputChange() {
+      // 防抖: 单位时间内只执行最后一次
+      // this的实例上赋值了一个timer的属性
+      clearTimeout(this.timer) // 清理上一次的定时器
+      this.timer = setTimeout(() => {
+        this.queryParams.page = 1
+        this.getEmployeeList()
+      }, 300)
     }
   },
   created() {
