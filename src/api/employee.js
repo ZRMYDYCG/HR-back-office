@@ -6,3 +6,13 @@ export const apiGetEmployeeList = (params) => {
     params
   })
 }
+
+/**
+ * 导出员工excel表
+*/
+export const apiExportEmployee = () => {
+  return service({
+    url: '/sys/user/export',
+    responseType: 'blob'
+  })
+}

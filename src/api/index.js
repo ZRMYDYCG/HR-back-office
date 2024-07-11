@@ -21,13 +21,15 @@ service.interceptors.request.use((config) => {
 
 // 响应拦截器
 service.interceptors.response.use((response) => {
-  // 返回的结果 response 默认包裹了一层 data
-  const { data, message, success } = response.data
+  // axios默认包裹了data
+  // 判断是不是Blob
+  if (response.data instanceof Blob) return response.data // 返回了Blob对象
+  const { data, message, success } = response.data // 默认json格式
   if (success) {
     console.log(data)
     return data
   } else {
-    Message({ type: 'error', message }) // 错误弹框提示
+    Message({ type: 'error', message })
     return Promise.reject(new Error(message))
   }
 }, async(error) => {
